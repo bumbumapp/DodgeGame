@@ -1,8 +1,9 @@
-Dodge is a game for Android devices in which you steer from one side of the
-screen to the other, avoiding a swarm of enemies. It is released under version
-3 of the GPL; see "COPYING" for the license text.
+DataMonitor Modified Version
+Copyright (C) 2023 Bum bum apps
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This program is a modified version of [dodge-android](https://github.com/dozingcat),originally developed by Brian Neninger.
+Modifications made on April 11, 2023, include:
+- added time and show in interface 
+- added score logic,and show highscore
+
+The modified version is distributed under the same license as the original software, the [GNU General Public License version 3](https://github.com/dozingcat/dodge-android/blob/master/COPYING).
