@@ -1,11 +1,10 @@
-[dodge-android](https://github.com/dozingcat/dodge-android)
-Modified Version
+dodge-android Modified Version
 Copyright (C) 2023 Bum bum apps
 
-This program is a modified version of 
+This program is a modified version of dodge-android(https://github.com/dozingcat/dodge-android)
 ,originally developed by Brian Neninger.
 Modifications made on April 11, 2023, include:
 - added time and show in interface 
 - added score logic,and show highscore
 
-The modified version is distributed under the same license as the original software, the [GNU General Public License version 3] (https://github.com/dozingcat/dodge-android/blob/master/COPYING).
+The modified version is distributed under the same license as the original software, the GNU General Public License version 3 (https://github.com/dozingcat/dodge-android/blob/master/COPYING).
