@@ -3,16 +3,20 @@ package com.dozingcatsoftware.dodge;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.dozingcatsoftware.dodge.model.Field;
 import com.dozingcatsoftware.dodge.model.LevelManager;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,33 +29,39 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class DodgeMain extends Activity implements Field.Delegate {
 	
 	Field field;
 	LevelManager levelManager;
-	
+	ImageButton icMore;
 	FieldView fieldView;
 	View menuView;
 	View pausedMenuView;
 	TextView levelText;
 	TextView livesText;
 	TextView statusText;
-	TextView bestLevelText;
-	TextView bestFreePlayLevelText;
+	TextView bestLevelText,bestLevelHighScore;
+	TextView bestFreePlayLevelText,bestFreePlayHighScoreText;
 	Button continueFreePlayButton;
 	View bestFreePlayLevelView;
 	View bestLevelView;
 	MenuItem endGameMenuItem;
-	MenuItem selectBackgroundImageMenuItem;
 	MenuItem preferencesMenuItem;
-	
+	Timer timer;
+	int seconds;
+	int elapsedSeconds;
+	TextView time,score;
+	int scoreInt=1;
+	boolean paused=true;
+
 	private static final int ACTIVITY_PREFERENCES = 1;
 	
 	Handler messageHandler;
 		
-	int lives = 9;
+	int lives = 3;
 	
     /** Called when the activity is first created. */
     @Override
@@ -59,13 +69,11 @@ public class DodgeMain extends Activity implements Field.Delegate {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
-        
         messageHandler = new Handler() {
             public void handleMessage(Message m) {
                 processMessage(m);
             }
         };
-        
         levelManager = new LevelManager();
         
         field = new Field();
@@ -74,16 +82,27 @@ public class DodgeMain extends Activity implements Field.Delegate {
         field.setMaxBullets(levelManager.numberOfBulletsForCurrentLevel());
         
         levelText = (TextView)findViewById(R.id.levelText);
+		time= findViewById(R.id.timeText);
+		score = findViewById(R.id.score);
+		icMore=findViewById(R.id.ic_more);
+		icMore.setEnabled(false);
         livesText = (TextView)findViewById(R.id.livesText);
         statusText = (TextView)findViewById(R.id.statusText);
-        
+
         // uncomment to clear high scores
         /*
         setBestLevel(true, 0);
         setBestLevel(false, 0);
         */
-        
+         icMore.setOnClickListener(new View.OnClickListener() {
+			 @Override
+			 public void onClick(View view) {
+				pauseGame();
+			 }
+		 });
         bestLevelText = (TextView)findViewById(R.id.bestLevelText);
+		bestFreePlayHighScoreText=findViewById(R.id.highscore);
+		bestLevelHighScore=findViewById(R.id.bestScoreText);
         bestFreePlayLevelText = (TextView)findViewById(R.id.bestFreePlayLevelText);
         continueFreePlayButton = (Button)findViewById(R.id.continueFreePlayButton);
         bestLevelView = findViewById(R.id.bestLevelView);
@@ -110,12 +129,12 @@ public class DodgeMain extends Activity implements Field.Delegate {
         });
 
         
-        Button aboutButton = (Button)findViewById(R.id.aboutButton);
-        aboutButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                doAbout();
-            }
-        });
+//        Button aboutButton = (Button)findViewById(R.id.aboutButton);
+//        aboutButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                doAbout();
+//            }
+//        });
 
         Button preferencesButton = findViewById(R.id.preferencesButton);
         preferencesButton.setOnClickListener(new View.OnClickListener() {
@@ -146,14 +165,59 @@ public class DodgeMain extends Activity implements Field.Delegate {
         fieldView.setField(field);
         fieldView.setMessageHandler(messageHandler);
         
-        updateFromPreferences();        
+        updateFromPreferences();
     }
-    
-    @Override
+
+	class RemindTask extends TimerTask {
+		public void run() {
+			if (!paused) {
+				seconds++;
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						int minutes = seconds / 60;
+						int remainingSeconds = seconds % 60;
+						String timeString = String.format("%02d:%02d", minutes, remainingSeconds);
+						time.setText(timeString);
+						if (scoreInt<=0){
+                             doGameOver();
+						}
+					}
+				});
+			}
+		}
+	}
+	public void pauseTimer() {
+		paused = true;
+		if (timer!=null){
+			timer.cancel();
+		}
+		elapsedSeconds = seconds; // store the elapsed time
+	}
+
+	public void resumeTimer() {
+		paused = false;
+		icMore.setEnabled(true);
+		timer = new Timer(); // create a new timer
+		seconds = elapsedSeconds; // set the elapsed time as the new starting time
+		timer.schedule(new RemindTask(), 0, 1000); // schedule a new RemindTask
+	}
+	public void startTimer() {
+		icMore.setEnabled(true);
+		paused = false;
+		seconds=0;
+		if (timer!=null){
+			timer.cancel();
+		}
+		timer = new Timer(); // create a new timer
+		timer.schedule(new RemindTask(), 0, 1000); // schedule a new RemindTask
+	}
+	@Override
     public void onPause() {
     	super.onPause();
+		pauseTimer();
     	fieldView.stop();
-    }
+	}
     
     @Override
     public void onResume() {
@@ -266,19 +330,36 @@ public class DodgeMain extends Activity implements Field.Delegate {
        	editor.putInt(key, val);
        	editor.commit();
     }
-    
-    void recordCurrentLevel() {
-    	if (levelManager.getCurrentLevel() > bestLevel(inFreePlay())) {
+	int bestScore(boolean freePlay) {
+		String key = (freePlay) ? "BestFreePlayScore" : "BestScore";
+		return getPreferences(MODE_PRIVATE).getInt(key, 0);
+	}
+    void setMaxScore(boolean freePlay, int val){
+		String key = (freePlay) ? "BestFreePlayScore" : "BestScore";
+	    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+       	editor.putInt(key, val);
+       	editor.commit();
+	}
+    void recordCurrentLevel(int scoreInt) {
+		if (bestScore(inFreePlay())<scoreInt){
+			setMaxScore(inFreePlay(),scoreInt);
+		}
+		if (levelManager.getCurrentLevel() > bestLevel(inFreePlay())) {
     		setBestLevel(inFreePlay(), levelManager.getCurrentLevel());
     	}
     }
 
     void updateBestLevelFields() {
     	int bestNormal = bestLevel(false);
+    	int bestNormalScore = bestScore(false);
     	bestLevelText.setText((bestNormal>1) ? String.valueOf(bestNormal) : getString(R.string.score_none));
+		bestLevelHighScore.setText(bestNormalScore>0?String.valueOf(bestNormalScore):getString(R.string.score_none));
     	
     	int bestFree = bestLevel(true);
+    	int bestFreeScore = bestScore(true);
     	bestFreePlayLevelText.setText((bestFree>1) ? String.valueOf(bestFree) : getString(R.string.score_none));
+		bestFreePlayHighScoreText.setText(bestFreeScore>0?String.valueOf(bestFreeScore):getString(R.string.score_none));
+
 		continueFreePlayButton.setEnabled(bestFree>1);
     	menuView.forceLayout();
     }
@@ -286,17 +367,29 @@ public class DodgeMain extends Activity implements Field.Delegate {
 
     void processMessage(Message m) {
     	String action = m.getData().getString("event");
+		String scoreText=score.getText().toString();
     	if ("goal".equals(action)) {
-    		levelManager.setCurrentLevel(1 + levelManager.getCurrentLevel());
-    		recordCurrentLevel();
-        	synchronized(field) {
+			scoreInt=100-seconds*levelManager.getCurrentLevel()+(levelManager.getCurrentLevel())*100;
+			if (scoreInt<=0){
+				score.setText("Score:"+0);
+			}else{
+				score.setText("Score:"+scoreInt);
+
+			}
+
+			levelManager.setCurrentLevel(1 + levelManager.getCurrentLevel());
+    		recordCurrentLevel(scoreInt);
+			startTimer();
+			synchronized(field) {
         		field.setMaxBullets(levelManager.numberOfBulletsForCurrentLevel());
         	}
         	updateScore();
     	}
     	else if ("death".equals(action)) {
-    		if (lives>0) lives--;
+			scoreInt= Integer.parseInt(scoreText.substring(scoreText.indexOf(":")+1));
+			if (lives>0) lives--;
     		synchronized(field) {
+
         		if (lives==0) {
         			field.removeDodger();
         			doGameOver();
@@ -315,11 +408,13 @@ public class DodgeMain extends Activity implements Field.Delegate {
 	}
 
 	void pauseGame() {
+		pauseTimer();
     	fieldView.stop();
     	showMenu();
 	}
 
 	void resumeGame() {
+		resumeTimer();
     	fieldView.start();
     	hideMenu();
 	}
@@ -350,13 +445,18 @@ public class DodgeMain extends Activity implements Field.Delegate {
     }
     
     void doGameOver() {
+		timer.cancel();
     	field.removeDodger();
     	fieldView.start();
+		scoreInt=1;
     	statusText.setText(getString(R.string.game_over_message));
+		icMore.setEnabled(false);
     	showMenu();
     }
     
     void startGameAtLevelWithLives(int startLevel, int numLives) {
+		score.setText("Score:100");
+		startTimer();
     	levelManager.setCurrentLevel(startLevel);
     	field.setMaxBullets(levelManager.numberOfBulletsForCurrentLevel());
     	field.createDodger();
@@ -366,7 +466,7 @@ public class DodgeMain extends Activity implements Field.Delegate {
     }
     
     void doNewGame() {
-    	startGameAtLevelWithLives(1, 9);
+    	startGameAtLevelWithLives(1, 3);
     }
 
     void doFreePlay(int startLevel) {
@@ -400,5 +500,12 @@ public class DodgeMain extends Activity implements Field.Delegate {
 		Map params = new HashMap();
 		params.put("event", "goal");
 		sendMessage(params);
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		finishAffinity();
 	}
 }

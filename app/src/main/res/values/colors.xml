@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="icon_background">#000000</color>
+    <color name="yellow">#FFC107</color>
+    <color name="white">#FFFFFF</color>
+    <color name="dark_blue">#100E22</color>
+    <color name="light_blue">#373553</color>
+    <color name="background">#221f35</color>
+    <color name="red">#09F112</color>
 </resources>

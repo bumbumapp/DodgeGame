@@ -1,19 +1,27 @@
 package com.dozingcatsoftware.dodge;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.prefs.Preferences;
 
 public class DodgePreferences extends PreferenceActivity {
 	
@@ -26,12 +34,32 @@ public class DodgePreferences extends PreferenceActivity {
 	public static final String SHOW_FPS_KEY = "showFPS";
 
 	BackgroundImagePreference selectBackgroundPref;
+    ToolbarPreference toolbarPreference;
+    Preference sourceCode,licence;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
-		
+        licence=(Preference)findPreference("app_licence");
+        licence.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent=new Intent(Intent.ACTION_VIEW,Uri.parse("https://github.com/dozingcat/dodge-android/blob/master/COPYING"));
+                startActivity(intent);
+                return true;
+            }
+        });
+        sourceCode=(Preference)findPreference("source_code");
+        sourceCode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent=new Intent(Intent.ACTION_VIEW,Uri.parse("https://github.com/bumbumapp/DodgeGame"));
+                startActivity(intent);
+                return true;
+            }
+        });
+		toolbarPreference=(ToolbarPreference) findPreference("backs");
 	    selectBackgroundPref = (BackgroundImagePreference)findPreference("selectBackgroundImage");
 		selectBackgroundPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference preference) {
@@ -39,8 +67,18 @@ public class DodgePreferences extends PreferenceActivity {
 				return true;
 			}
 		});
+
+        toolbarPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+              startActivity(new Intent(DodgePreferences.this,DodgeMain.class));
+                return true;
+            }
+        });
+
+
+
 	}
-	
 	/** Starts the Gallery (or other image picker) activity to select an image */
 	void selectBackgroundImage() {
 		Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI); 

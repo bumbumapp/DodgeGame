@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.DodgeTheme" parent="@android:style/Theme.NoTitleBar.Fullscreen" />
+    <style name="PreferencesTheme" parent="Theme.DodgeTheme">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:colorAccent" tools:targetApi="lollipop">#FFC107</item>
+        <item name="android:background">#221f35</item>
+        <item name="android:textColorSecondary">#9E9696</item>
+    </style>
 </resources>

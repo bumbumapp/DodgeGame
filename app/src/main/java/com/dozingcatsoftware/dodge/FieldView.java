@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -84,13 +85,13 @@ public class FieldView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		surfaceHolder = this.getHolder();
 		surfaceHolder.addCallback(this);
-		
+
 		blackPaint = new Paint();
-		blackPaint.setARGB(255, 0, 0, 0);
+		blackPaint.setColor(Color.parseColor("#000000"));
 		startAreaPaint = new Paint();
-		startAreaPaint.setARGB(128, 255, 0, 0);
+		startAreaPaint.setColor(Color.parseColor("#221f35"));
 		endAreaPaint = new Paint();
-		endAreaPaint.setARGB(128, 0, 255, 0);
+		endAreaPaint.setColor(Color.parseColor("#373553"));
 		dodgerPaint = new Paint();
 		dodgerPaint.setARGB(255, 0, 0, 255);
 		dodgerPaint.setAntiAlias(true);

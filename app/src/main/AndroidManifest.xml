@@ -6,7 +6,8 @@
     <uses-sdk android:minSdkVersion="4" />
     
     <application
-        android:icon="@mipmap/icon"
+        android:icon="@mipmap/app_logo"
+        android:roundIcon="@mipmap/app_logo_round"
         android:label="@string/app_name"
         android:isGame="true"
         android:appCategory="game"
@@ -27,7 +28,7 @@
           android:screenOrientation="portrait">
 </activity>
 
-<activity android:name="DodgePreferences" android:screenOrientation="portrait"></activity>
+<activity android:name="DodgePreferences" android:screenOrientation="portrait" android:theme="@style/PreferencesTheme"></activity>
 </application>
 
 </manifest>

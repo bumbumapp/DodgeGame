@@ -2,15 +2,52 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
+    android:background="@color/dark_blue"
     android:layout_height="fill_parent">
 
-        <TextView
-            android:id="@+id/aboutTextView"
-            android:text="@string/about_text"
-            android:autoLink="web|email"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:lineSpacingMultiplier="1.225"
-            android:includeFontPadding="true" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+                <RelativeLayout
+                    android:id="@+id/relative"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="#090E23">
+
+                        <ImageView
+                            android:id="@+id/back"
+                            android:layout_width="30dp"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:src="@drawable/ic_back"
+                            android:tint="@color/white" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_toRightOf="@+id/back"
+                            android:text="Help"
+                            android:textColor="@color/white"
+                            android:textSize="25sp" />
+
+                </RelativeLayout>
+                <TextView
+                    android:id="@+id/aboutTextView"
+                    android:text="@string/about_text"
+                    android:autoLink="web|email"
+                    android:textSize="20sp"
+                    android:padding="20dp"
+                    android:layout_below="@+id/relative"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:lineSpacingMultiplier="1.225"
+                    android:includeFontPadding="true" />
+        </RelativeLayout>
+
     
 </FrameLayout>

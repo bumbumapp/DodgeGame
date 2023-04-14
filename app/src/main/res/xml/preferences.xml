@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	<com.dozingcatsoftware.dodge.ToolbarPreference
+		android:key="backs"
+		android:enabled="true"
+		android:layout="@layout/settings">
+
+	</com.dozingcatsoftware.dodge.ToolbarPreference>
 	<PreferenceCategory android:title="Preferences">
 
 
-	<CheckBoxPreference android:key="tiltControl" android:defaultValue="true" android:enabled="true" android:title="Tilt Control"></CheckBoxPreference>
-	<CheckBoxPreference android:key="flashingColors" android:enabled="true" android:title="Flashing Dots"></CheckBoxPreference>
-	<CheckBoxPreference android:key="showFPS" android:enabled="true" android:title="Show FPS"></CheckBoxPreference>
 <CheckBoxPreference android:title="Use Background Image" android:key="useBackgroundImage"></CheckBoxPreference>
-<com.dozingcatsoftware.dodge.BackgroundImagePreference 
+<com.dozingcatsoftware.dodge.BackgroundImagePreference
 	android:key="selectBackgroundImage" android:title="Select Background..." android:layout="@layout/image_preference" />
 </PreferenceCategory>
+	<PreferenceCategory
+		android:title="About">
+
+		<Preference
+			android:key="app_licence"
+			android:summary="GPL-3.0 license"
+			android:title="App Licence" />
+
+		<Preference
+			android:iconSpaceReserved="false"
+			android:key="source_code"
+			android:title="Source Code" />
+
+	</PreferenceCategory>
 </PreferenceScreen>
