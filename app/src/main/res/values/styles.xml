@@ -8,4 +8,12 @@
         <item name="android:background">#221f35</item>
         <item name="android:textColorSecondary">#9E9696</item>
     </style>
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Customize the attributes of the AlertDialog -->
+        <item name="android:windowBackground">#221f35</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <!-- Add more attributes to customize the dialog's appearance -->
+    </style>
+
 </resources>

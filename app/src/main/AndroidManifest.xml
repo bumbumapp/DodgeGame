@@ -3,8 +3,7 @@
       package="com.dozingcatsoftware.dodge"
       android:versionName="1.5.1" android:versionCode="10">
 
-    <uses-sdk android:minSdkVersion="4" />
-    
+<uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:icon="@mipmap/app_logo"
         android:roundIcon="@mipmap/app_logo_round"
@@ -29,6 +28,13 @@
 </activity>
 
 <activity android:name="DodgePreferences" android:screenOrientation="portrait" android:theme="@style/PreferencesTheme"></activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/app_id" />
+
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="true" />
 </application>
 
 </manifest>

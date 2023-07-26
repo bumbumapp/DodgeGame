@@ -36,17 +36,18 @@
                             android:textSize="25sp" />
 
                 </RelativeLayout>
+
                 <TextView
                     android:id="@+id/aboutTextView"
-                    android:text="@string/about_text"
-                    android:autoLink="web|email"
-                    android:textSize="20sp"
-                    android:padding="20dp"
-                    android:layout_below="@+id/relative"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:layout_below="@+id/relative"
+                    android:autoLink="web|email"
+                    android:includeFontPadding="true"
                     android:lineSpacingMultiplier="1.225"
-                    android:includeFontPadding="true" />
+                    android:padding="20dp"
+                    android:text="@string/about_text"
+                    android:textSize="20sp" />
         </RelativeLayout>
 
     

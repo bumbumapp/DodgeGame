@@ -16,9 +16,9 @@
             android:layout_width="30dp"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
             android:background="#090E23"
             android:clickable="true"
-            android:layout_marginStart="10dp"
             android:src="@drawable/ic_back"
             android:tint="@color/white" />
 

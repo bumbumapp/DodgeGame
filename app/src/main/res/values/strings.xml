@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="level_prefix">Level: </string>
-<string name="app_name">Dodge Game pro</string>
+<string name="app_name">Dodge Game</string>
 <string name="about_text">Move your blue circle to the green goal zone, avoiding the enemy dots roaming around the field. Steer by tilting the device, or by using the trackball or D-pad. You can also touch the screen to move to that location. When you reach the goal zone, the level will advance, more dots will be added, and the goal will switch to the other end. You have 9 lives in a normal game; free play lives are unlimited and you can continue from the highest level you\'ve previously reached.\n\nUse the back button to pause a game in progress. From the preferences screen you can enable or disable tilt control, make the dots change colors continuously, show frames per second, or select a background image from your photos.</string>
 <string name="level_initial">Level: 1</string>
 <string name="lives_prefix">Lives: </string>
@@ -18,4 +18,8 @@
 <string name="preferences">Preferences</string>
     <string name="time">00:00</string>
     <string name="score">Score:100</string>
+    <string name="app_id">ca-app-pub-8444865753152507~3275521405</string>
+    <string name="interstial_id">ca-app-pub-8444865753152507/4177539531</string>
+    <string name="admob_banner_id">ca-app-pub-8444865753152507/3539508618</string>
+    <string name="rewarsd_id">ca-app-pub-8444865753152507/5566642821</string>
 </resources>
