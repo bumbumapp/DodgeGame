@@ -4,6 +4,8 @@
       android:versionName="1.5.1" android:versionCode="10">
 
 <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+
     <application
         android:icon="@mipmap/app_logo"
         android:roundIcon="@mipmap/app_logo_round"

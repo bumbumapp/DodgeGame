@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.bumbumapps.dodgegamepro"
         minSdkVersion 21
-        targetSdkVersion 31
-        versionCode 3
-        versionName "1.1.1"
+        targetSdkVersion 33
+        versionCode 4
+        versionName "1.1.2"
     }
 
     buildTypes {
@@ -24,7 +24,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.google.android.gms:play-services-ads:20.2.0'
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
-
+    implementation 'androidx.work:work-runtime:2.7.1'
     // Add the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
