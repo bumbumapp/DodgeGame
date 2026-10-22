@@ -18,8 +18,5 @@
 <string name="preferences">Preferences</string>
     <string name="time">00:00</string>
     <string name="score">Score:100</string>
-    <string name="app_id">ca-app-pub-8444865753152507~3275521405</string>
-    <string name="interstial_id">ca-app-pub-8444865753152507/4177539531</string>
-    <string name="admob_banner_id">ca-app-pub-8444865753152507/3539508618</string>
-    <string name="rewarsd_id">ca-app-pub-8444865753152507/5566642821</string>
+    <string name="privacy_options">Privacy options</string>
 </resources>
