@@ -15,7 +15,12 @@
 	android:key="selectBackgroundImage" android:title="Select Background..." android:layout="@layout/image_preference" />
 </PreferenceCategory>
 	<PreferenceCategory
+		android:key="about_category"
 		android:title="About">
+
+		<Preference
+			android:key="privacy_options"
+			android:title="@string/privacy_options" />
 
 		<Preference
 			android:key="app_licence"

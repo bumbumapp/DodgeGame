@@ -1,7 +1,6 @@
 package com.dozingcatsoftware.dodge;
 
 import static com.dozingcatsoftware.dodge.AdsUtils.ISREWARDED;
-import static com.dozingcatsoftware.dodge.AdsUtils.mInterstitialAd;
 import static com.dozingcatsoftware.dodge.AdsUtils.rewardedAd;
 
 import java.io.File;
@@ -86,8 +85,10 @@ public class DodgeMain extends Activity implements Field.Delegate {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-		FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
-		messageHandler = new Handler() {
+		if (!com.google.firebase.FirebaseApp.getApps(this).isEmpty()) {
+			FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+		}
+		messageHandler = new Handler(android.os.Looper.getMainLooper()) {
 			public void handleMessage(Message m) {
 				processMessage(m);
 			}
@@ -106,8 +107,6 @@ public class DodgeMain extends Activity implements Field.Delegate {
 		icMore.setEnabled(false);
 		livesText = (TextView) findViewById(R.id.livesText);
 		statusText = (TextView) findViewById(R.id.statusText);
-		AdsUtils.loadGoogleInterstitialAd(this);
-		AdsUtils.loadRewardAds(this);
 //		rewardAd=new RewardAd(this,getString(R.string.reward_id));
 //		LoadRewardAds.loadRewardAd(rewardAd,this);
 		// uncomment to clear high scores
@@ -149,8 +148,12 @@ public class DodgeMain extends Activity implements Field.Delegate {
 			}
 		});
 
-		AdView bannerView = findViewById(R.id.hw_banner_view);
-		AdsUtils.showGoogleBannerAd(this,bannerView);
+		final android.view.ViewGroup bannerContainer = findViewById(R.id.hw_banner_view);
+		AdsConsent.gather(this, () -> {
+			AdsUtils.showGoogleBannerAd(DodgeMain.this, bannerContainer);
+			InterstitialHelper.preload(DodgeMain.this);
+			AdsUtils.loadRewardAds(DodgeMain.this);
+		});
 //        Button aboutButton = (Button)findViewById(R.id.aboutButton);
 //        aboutButton.setOnClickListener(new View.OnClickListener() {
 //            public void onClick(View v) {
@@ -457,14 +460,25 @@ public class DodgeMain extends Activity implements Field.Delegate {
 
 	private void rewardAdShow(DialogInterface dialog) {
 		Activity activityContext = DodgeMain.this;
-		rewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+		final com.google.android.gms.ads.rewarded.RewardedAd ad = rewardedAd;
+		if (ad == null) {
+			field.removeDodger();
+			doGameOver();
+			return;
+		}
+		AdsUtils.rewardedAd = null;
+		ad.setFullScreenContentCallback(rewardedCallback());
+		ad.show(activityContext, new OnUserEarnedRewardListener() {
 			@Override
 			public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
 				ISREWARDED=true;
 			}
 		});
 
-		rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+	}
+
+	private FullScreenContentCallback rewardedCallback() {
+		return new FullScreenContentCallback() {
 
 			@Override
 			public void onAdDismissedFullScreenContent() {
@@ -484,7 +498,9 @@ public class DodgeMain extends Activity implements Field.Delegate {
 			public void onAdFailedToShowFullScreenContent(AdError adError) {
 				// Called when ad fails to show.
 				Log.e("TAG", "Ad failed to show fullscreen content.");
-				rewardedAd = null;
+				field.removeDodger();
+				doGameOver();
+				AdsUtils.loadRewardAds(DodgeMain.this);
 			}
 
 			@Override
@@ -498,8 +514,7 @@ public class DodgeMain extends Activity implements Field.Delegate {
 				// Called when ad is shown.
 				Log.d("TAG", "Ad showed fullscreen content.");
 			}
-		});
-
+		};
 	}
 
 	boolean isGameInProgress() {
@@ -550,24 +565,8 @@ public class DodgeMain extends Activity implements Field.Delegate {
 		scoreInt=1;
 		statusText.setText(getString(R.string.game_over_message));
 		icMore.setEnabled(false);
-		if(Globals.TIMER_FINISHED && mInterstitialAd != null){
-			mInterstitialAd.show(DodgeMain.this);
-			mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
-				@Override
-				public void onAdDismissedFullScreenContent() {
-					Globals.TIMER_FINISHED=false;
-					Timers.timer().start();
-					mInterstitialAd = null;
-					AdsUtils.loadGoogleInterstitialAd(DodgeMain.this);
-					showMenu();
-				}
-			});
-		}else{
-			Log.d("INTERS","sbhsdk");
-			showMenu();
-
-		}
-
+		// Game over is the natural break point; InterstitialHelper enforces the frequency cap.
+		InterstitialHelper.showIfReady(this, this::showMenu);
 	}
 
 	void startGameAtLevelWithLives(int startLevel, int numLives) {

@@ -50,6 +50,19 @@ public class DodgePreferences extends PreferenceActivity {
                 return true;
             }
         });
+        Preference privacy = findPreference("privacy_options");
+        if (privacy != null) {
+            if (AdsConsent.isPrivacyOptionsRequired(this)) {
+                privacy.setOnPreferenceClickListener(preference -> {
+                    AdsConsent.showPrivacyOptions(DodgePreferences.this);
+                    return true;
+                });
+            } else {
+                android.preference.PreferenceGroup about =
+                        (android.preference.PreferenceGroup) findPreference("about_category");
+                if (about != null) about.removePreference(privacy);
+            }
+        }
         sourceCode=(Preference)findPreference("source_code");
         sourceCode.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -81,8 +94,20 @@ public class DodgePreferences extends PreferenceActivity {
 	}
 	/** Starts the Gallery (or other image picker) activity to select an image */
 	void selectBackgroundImage() {
-		Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI); 
-		startActivityForResult(i, ACTIVITY_SELECT_IMAGE); 
+		// System photo picker where available (no storage permission needed), document picker otherwise.
+		Intent i;
+		if (android.os.Build.VERSION.SDK_INT >= 33) {
+			i = new Intent(android.provider.MediaStore.ACTION_PICK_IMAGES);
+		} else {
+			i = new Intent(Intent.ACTION_GET_CONTENT);
+			i.addCategory(Intent.CATEGORY_OPENABLE);
+		}
+		i.setType("image/*");
+		try {
+			startActivityForResult(i, ACTIVITY_SELECT_IMAGE);
+		} catch (android.content.ActivityNotFoundException e) {
+			Log.w("DodgePreferences", "No image picker available", e);
+		}
 	}
 	
 	@Override
@@ -91,16 +116,16 @@ public class DodgePreferences extends PreferenceActivity {
 
         switch(requestCode) {
             case ACTIVITY_SELECT_IMAGE:
-                if (resultCode == RESULT_OK) {
+                if (hasImageResult(resultCode, intent)) {
                     // retrieve selected image URI and make sure image background is enabled
                     Uri imageUri = intent.getData();
                     // imageUri is likely to be a "content" URI which for which we only have
                     // temporary access. We need to copy the file to private storage in order to
                     // read it later.
-                    try {
-                        OutputStream output = openFileOutput(
+                    try (OutputStream output = openFileOutput(
                                 DodgePreferences.BACKGROUND_IMAGE_FILENAME, Context.MODE_PRIVATE);
-                        InputStream input = getContentResolver().openInputStream(imageUri);
+                         InputStream input = getContentResolver().openInputStream(imageUri)) {
+                        if (input == null) throw new java.io.FileNotFoundException(String.valueOf(imageUri));
                         byte[] buffer = new byte[32768];
                         int bytesRead;
                         long totalBytes = 0;
@@ -108,7 +133,6 @@ public class DodgePreferences extends PreferenceActivity {
                             output.write(buffer, 0, bytesRead);
                             totalBytes += bytesRead;
                         }
-                        output.close();
                         Log.i("DodgePreferences",
                                 "Successfully wrote background image, size: " + totalBytes);
                     }
@@ -124,4 +148,8 @@ public class DodgePreferences extends PreferenceActivity {
         }
     }
     
+    /** The picker may return RESULT_OK with no data (e.g. provider died); that used to crash with an NPE. */
+    static boolean hasImageResult(int resultCode, Intent data) {
+        return resultCode == RESULT_OK && data != null && data.getData() != null;
+    }
 }
