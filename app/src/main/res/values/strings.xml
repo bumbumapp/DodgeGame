@@ -6,7 +6,7 @@
 <string name="level_initial">Level 1</string>
 <string name="lives_prefix">Lives</string>
 <string name="lives_initial">Lives 3</string>
-<string name="free_play_lives">lots</string>
+<string name="free_play_lives">∞</string>
 <string name="welcome_message">Reach the green zone, dodge the dots</string>
 <string name="game_over_message">Game Over</string>
 <string name="best_level">Best Level:</string>
