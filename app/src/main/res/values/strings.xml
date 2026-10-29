@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="level_prefix">Level: </string>
+<string name="level_prefix">Level</string>
 <string name="app_name">Dodge Game</string>
 <string name="about_text">Move your blue circle to the green goal zone, avoiding the enemy dots roaming around the field. Steer by tilting the device, or by using the trackball or D-pad. You can also touch the screen to move to that location. When you reach the goal zone, the level will advance, more dots will be added, and the goal will switch to the other end. You have 9 lives in a normal game; free play lives are unlimited and you can continue from the highest level you\'ve previously reached.\n\nUse the back button to pause a game in progress. From the preferences screen you can enable or disable tilt control, make the dots change colors continuously, show frames per second, or select a background image from your photos.</string>
-<string name="level_initial">Level: 1</string>
-<string name="lives_prefix">Lives: </string>
-<string name="lives_initial">Lives: 3</string>
+<string name="level_initial">Level 1</string>
+<string name="lives_prefix">Lives</string>
+<string name="lives_initial">Lives 3</string>
 <string name="free_play_lives">lots</string>
-<string name="welcome_message">Welcome to Dodge!</string>
+<string name="welcome_message">Reach the green zone, dodge the dots</string>
 <string name="game_over_message">Game Over</string>
 <string name="best_level">Best Level:</string>
 <string name="best_free_play_level">Free Play Level:</string>
@@ -19,4 +19,13 @@
     <string name="time">00:00</string>
     <string name="score">Score:100</string>
     <string name="privacy_options">Privacy options</string>
+<string name="more_options">More options</string>
+    <string name="game_paused">Game paused</string>
+    <string name="continue_game">Continue</string>
+    <string name="menu_title">Dodge</string>
+    <string name="new_game">New game</string>
+    <string name="free_play">Free play</string>
+    <string name="continue_free_play">Continue free play</string>
+    <string name="settings">Settings</string>
+    <string name="highscore_label">Score</string>
 </resources>

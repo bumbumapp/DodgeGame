@@ -1,278 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    xmlns:hwads="http://schemas.android.com/apk/res-auto"
-    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0D0F16">
+
     <FrameLayout
         android:id="@+id/frame"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/hw_banner_view">
 
-
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <!-- HUD: level, time, score, lives as small Bento chips. -->
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:background="#0D0F16"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="8dp">
 
                 <TextView
-                    android:text="@string/level_initial"
                     android:id="@+id/levelText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:textSize="17sp"
-                    android:textColor="@color/yellow"
-                    android:includeFontPadding="true"
-                    android:lines="3"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:background="@color/dark_blue"
-                    android:layout_weight="1" />
+                    style="@style/DG.Hud"
+                    android:text="@string/level_initial" />
+
                 <TextView
-                    android:text="@string/time"
                     android:id="@+id/timeText"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:textSize="17sp"
-                    android:textColor="@color/yellow"
-                    android:includeFontPadding="true"
-                    android:lines="3"
-                    android:background="@color/dark_blue"
-                    android:layout_weight="1" />
+                    style="@style/DG.Hud"
+                    android:text="@string/time" />
+
                 <TextView
-                    android:text="@string/score"
                     android:id="@+id/score"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:textSize="17sp"
-                    android:textColor="@color/yellow"
-                    android:includeFontPadding="true"
-                    android:lines="3"
-
-                    android:background="@color/dark_blue"
-                    android:layout_weight="1" />
+                    style="@style/DG.Hud"
+                    android:layout_weight="1.3"
+                    android:text="@string/score"
+                    android:textColor="#FFC857" />
 
                 <TextView
-                    android:text="@string/lives_initial"
                     android:id="@+id/livesText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:textColor="@color/yellow"
-                    android:background="@color/dark_blue"
-                    android:includeFontPadding="true"
-                    android:lines="3"
-                    android:textSize="17sp"
-                    android:layout_weight="1" />
+                    style="@style/DG.Hud"
+                    android:text="@string/lives_initial" />
+
                 <ImageButton
                     android:id="@+id/ic_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:background="@color/dark_blue"
-                    android:layout_weight="0.001"
-                    android:paddingEnd="5dp"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_more"/>
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/dg_chip"
+                    android:contentDescription="@string/more_options"
+                    android:src="@drawable/ic_more" />
             </LinearLayout>
 
             <com.dozingcatsoftware.dodge.FieldView
                 android:id="@+id/fieldView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1" />
-
         </LinearLayout>
 
+        <!-- Pause card -->
         <LinearLayout
             android:id="@+id/pausedMenuView"
-            android:visibility="gone"
-            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
-                android:orientation="vertical"
-                android:gravity="center"
-                android:backgroundTint="@color/background"
-                android:padding="10dp"
-                android:background="@drawable/background"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/dg_card"
+                android:orientation="vertical"
+                android:padding="22dp">
 
                 <TextView
-                    android:text="Game paused"
-                    android:textSize="20sp"
-                    android:textColor="#FF9800"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp" />
+                    android:fontFamily="@font/jakarta_extrabold"
+                    android:letterSpacing="-0.02"
+                    android:text="@string/game_paused"
+                    android:textColor="#EDEFF5"
+                    android:textSize="26sp" />
 
                 <Button
                     android:id="@+id/continueGameButton"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:padding="15dp"
-                    android:textSize="20sp"
-                    android:textColor="@color/yellow"
-                    android:background="@drawable/background"
-                    android:layout_margin="3dp"
-                    android:text="Continue" />
+                    style="@style/DG.Button.Primary"
+                    android:layout_marginTop="18dp"
+                    android:text="@string/continue_game" />
 
                 <Button
                     android:id="@+id/endGameButton"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:padding="15dp"
-                    android:textSize="20sp"
-                    android:textColor="@color/yellow"
-                    android:background="@drawable/background"
-                    android:layout_margin="3dp"
-                    android:text="End Game" />
+                    style="@style/DG.Button"
+                    android:text="@string/end_game" />
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Main menu card -->
         <LinearLayout
             android:id="@+id/menuView"
-            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@drawable/backgrounddialog"
-                android:padding="10dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/dg_card"
+                android:orientation="vertical"
+                android:padding="22dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/jakarta_extrabold"
+                    android:letterSpacing="-0.03"
+                    android:text="@string/menu_title"
+                    android:textColor="#EDEFF5"
+                    android:textSize="34sp" />
 
                 <TextView
                     android:id="@+id/statusText"
-                    android:text="Welcome to Dodge!"
-                    android:textSize="16dp"
-                    android:textColor="#FF9800"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp" />
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/jakarta_medium"
+                    android:text="@string/welcome_message"
+                    android:textColor="#9AA1B2"
+                    android:textSize="15sp" />
 
                 <Button
                     android:id="@+id/newGameButton"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:padding="15dp"
-                    android:textSize="20sp"
-                    android:background="@drawable/background"
-                    android:textColor="@color/yellow"
-                    android:layout_margin="3dp"
-                    android:text="New Game" />
+                    style="@style/DG.Button.Primary"
+                    android:layout_marginTop="18dp"
+                    android:text="@string/new_game" />
 
                 <Button
                     android:id="@+id/freePlayButton"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:padding="15dp"
-                    android:textSize="20sp"
-                    android:background="@drawable/background"
-                    android:textColor="@color/yellow"
-                    android:layout_margin="3dp"
-                    android:text="Free Play" />
-
-
-                <Button
-                    android:id="@+id/preferencesButton"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:padding="15dp"
-                    android:textSize="20sp"
-                    android:background="@drawable/background"
-                    android:textColor="@color/yellow"
-                    android:layout_margin="3dp"
-                    android:text="Settings" />
-
-                <TableLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <TableRow android:id="@+id/bestLevelView">
-                        <TextView
-                            android:text="@string/best_level"
-                            android:textColor="#FF9800"
-                            android:gravity="right" />
-                        <TextView
-                            android:id="@+id/bestLevelText"
-                            android:textColor="#FF9800"
-                            android:paddingStart="4sp" />
-                        <TextView
-                            android:text="   Highscore:"
-                            android:textColor="#FF9800"
-                            android:gravity="right" />
-                        <TextView
-                            android:id="@+id/bestScoreText"
-                            android:textColor="#FF9800"
-                            android:paddingStart="4sp" />
-                    </TableRow>
-                    <TableRow android:id="@+id/bestFreePlayLevelView"
-                        android:layout_marginBottom="10dp">
-                        <TextView
-                            android:text="@string/best_free_play_level"
-                            android:textColor="#FF9800"
-                            android:gravity="right" />
-                        <TextView
-                            android:id="@+id/bestFreePlayLevelText"
-                            android:textColor="#FF9800"
-                            android:paddingStart="4sp" />
-                        <TextView
-                            android:text="    Highscore:"
-                            android:textColor="#FF9800"
-                            android:gravity="right" />
-                        <TextView
-                            android:id="@+id/highscore"
-                            android:textColor="#FF9800"
-                            android:paddingStart="4sp" />
-                    </TableRow>
-                </TableLayout>
+                    style="@style/DG.Button"
+                    android:text="@string/free_play" />
 
                 <Button
                     android:id="@+id/continueFreePlayButton"
-                    android:text="Continue Free Play"
-                    android:gravity="center"
-                    android:background="@drawable/background"
-                    android:padding="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/DG.Button"
+                    android:text="@string/continue_free_play" />
 
+                <Button
+                    android:id="@+id/preferencesButton"
+                    style="@style/DG.Button"
+                    android:text="@string/settings" />
+
+                <!-- Best results -->
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:stretchColumns="1,3">
+
+                    <TableRow android:id="@+id/bestLevelView">
+
+                        <TextView style="@style/DG.Stat" android:text="@string/best_level" />
+
+                        <TextView
+                            android:id="@+id/bestLevelText"
+                            style="@style/DG.StatValue"
+                            android:paddingStart="6dp" />
+
+                        <TextView style="@style/DG.Stat" android:text="@string/highscore_label" />
+
+                        <TextView
+                            android:id="@+id/bestScoreText"
+                            style="@style/DG.StatValue"
+                            android:paddingStart="6dp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/bestFreePlayLevelView"
+                        android:layout_marginTop="6dp">
+
+                        <TextView style="@style/DG.Stat" android:text="@string/best_free_play_level" />
+
+                        <TextView
+                            android:id="@+id/bestFreePlayLevelText"
+                            style="@style/DG.StatValue"
+                            android:paddingStart="6dp" />
+
+                        <TextView style="@style/DG.Stat" android:text="@string/highscore_label" />
+
+                        <TextView
+                            android:id="@+id/highscore"
+                            style="@style/DG.StatValue"
+                            android:paddingStart="6dp" />
+                    </TableRow>
+                </TableLayout>
             </LinearLayout>
-
         </LinearLayout>
-
     </FrameLayout>
+
     <FrameLayout
         android:id="@+id/hw_banner_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
