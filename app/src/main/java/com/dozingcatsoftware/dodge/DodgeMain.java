@@ -1,7 +1,5 @@
 package com.dozingcatsoftware.dodge;
 
-import static com.dozingcatsoftware.dodge.AdsUtils.ISREWARDED;
-import static com.dozingcatsoftware.dodge.AdsUtils.rewardedAd;
 
 import java.io.File;
 import java.util.HashMap;
@@ -11,11 +9,6 @@ import java.util.TimerTask;
 
 import com.dozingcatsoftware.dodge.model.Field;
 import com.dozingcatsoftware.dodge.model.LevelManager;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
-import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 
@@ -422,7 +415,7 @@ public class DodgeMain extends Activity implements Field.Delegate {
 			synchronized (field) {
 
 				if (lives == 0) {
-					if (rewardedAd != null) {
+					if (AdsUtils.isRewardedReady()) {
 						pauseGame();
 						AlertDialog.Builder builder = new AlertDialog.Builder(DodgeMain.this, R.style.CustomAlertDialog);
 						builder.setTitle("")
@@ -459,62 +452,19 @@ public class DodgeMain extends Activity implements Field.Delegate {
 	}
 
 	private void rewardAdShow(DialogInterface dialog) {
-		Activity activityContext = DodgeMain.this;
-		final com.google.android.gms.ads.rewarded.RewardedAd ad = rewardedAd;
-		if (ad == null) {
-			field.removeDodger();
-			doGameOver();
-			return;
-		}
-		AdsUtils.rewardedAd = null;
-		ad.setFullScreenContentCallback(rewardedCallback());
-		ad.show(activityContext, new OnUserEarnedRewardListener() {
-			@Override
-			public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-				ISREWARDED=true;
-			}
-		});
-
-	}
-
-	private FullScreenContentCallback rewardedCallback() {
-		return new FullScreenContentCallback() {
-
-			@Override
-			public void onAdDismissedFullScreenContent() {
-				if (ISREWARDED){
-					fieldView.startDeathAnimation(field.getDodger().getPosition());
-					field.createDodger();
-					ISREWARDED=false;
-
-				}else {
-					field.removeDodger();
-					doGameOver();
-				}
-				AdsUtils.loadRewardAds(DodgeMain.this);
-			}
-
-			@Override
-			public void onAdFailedToShowFullScreenContent(AdError adError) {
-				// Called when ad fails to show.
-				Log.e("TAG", "Ad failed to show fullscreen content.");
+		boolean shown = AdsUtils.showRewarded(DodgeMain.this, earned -> {
+			if (earned) {
+				fieldView.startDeathAnimation(field.getDodger().getPosition());
+				field.createDodger();
+			} else {
 				field.removeDodger();
 				doGameOver();
-				AdsUtils.loadRewardAds(DodgeMain.this);
 			}
-
-			@Override
-			public void onAdImpression() {
-				// Called when an impression is recorded for an ad.
-				Log.d("TAG", "Ad recorded an impression.");
-			}
-
-			@Override
-			public void onAdShowedFullScreenContent() {
-				// Called when ad is shown.
-				Log.d("TAG", "Ad showed fullscreen content.");
-			}
-		};
+		});
+		if (!shown) {
+			field.removeDodger();
+			doGameOver();
+		}
 	}
 
 	boolean isGameInProgress() {

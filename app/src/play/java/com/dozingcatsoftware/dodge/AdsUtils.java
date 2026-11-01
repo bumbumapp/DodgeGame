@@ -2,11 +2,14 @@ package com.dozingcatsoftware.dodge;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
@@ -39,5 +42,44 @@ public class AdsUtils {
                         rewardedAd = ad;
                     }
                 });
+    }
+
+    /** Result of a rewarded ad: {@code earned} is true when the player watched it to the reward. */
+    public interface RewardCallback {
+        void onClosed(boolean earned);
+    }
+
+    public static boolean isRewardedReady() {
+        return rewardedAd != null;
+    }
+
+    /**
+     * Shows the preloaded rewarded ad. Returns false (and never calls {@code callback}) if none is ready;
+     * otherwise {@code callback} runs once when the ad is dismissed or fails to show.
+     */
+    public static boolean showRewarded(Activity activity, RewardCallback callback) {
+        final RewardedAd ad = rewardedAd;
+        if (ad == null) {
+            return false;
+        }
+        rewardedAd = null;
+        ad.setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                boolean earned = ISREWARDED;
+                ISREWARDED = false;
+                callback.onClosed(earned);
+                loadRewardAds(activity);
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                Log.e("TAG", "Ad failed to show fullscreen content.");
+                callback.onClosed(false);
+                loadRewardAds(activity);
+            }
+        });
+        ad.show(activity, rewardItem -> ISREWARDED = true);
+        return true;
     }
 }
