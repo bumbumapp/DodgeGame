@@ -2,6 +2,8 @@ package com.dozingcatsoftware.dodge;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.ViewGroup;
 
@@ -63,7 +65,15 @@ public class AdsUtils {
         }
         rewardedAd = null;
         earnedReward = false;
+        // The game waits for callback: if show() never opens the ad, finish as "not earned" after 3 s.
+        final boolean[] opened = {false};
+        final boolean[] done = {false};
         ad.show(activity, new RewardAdStatusListener() {
+            @Override
+            public void onRewardAdOpened() {
+                opened[0] = true;
+            }
+
             @Override
             public void onRewarded(Reward reward) {
                 earnedReward = true;
@@ -73,17 +83,31 @@ public class AdsUtils {
             public void onRewardAdClosed() {
                 boolean earned = earnedReward;
                 earnedReward = false;
-                callback.onClosed(earned);
-                loadRewardAds(activity);
+                finish(earned);
             }
 
             @Override
             public void onRewardAdFailedToShow(int errorCode) {
                 Log.e("TAG", "Reward ad failed to show: " + errorCode);
-                callback.onClosed(false);
+                finish(false);
+            }
+
+            private void finish(boolean earned) {
+                if (done[0]) {
+                    return;
+                }
+                done[0] = true;
+                callback.onClosed(earned);
                 loadRewardAds(activity);
             }
         });
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (!opened[0] && !done[0]) {
+                done[0] = true;
+                callback.onClosed(false);
+                loadRewardAds(activity);
+            }
+        }, 3000L);
         return true;
     }
 }
